@@ -27,26 +27,27 @@ SoundFile[] flaps;
 public Player player;
 public AIFloater floater;
 public int numPlayers = 4;
-public int numGamePads;    
+public int numGamePads; 
+int numBumpers = 20;
 int numBumperSpotsX; 
 int numBumperSpotsY; 
 int numNonAdjustableBumpers = 0;
 boolean decisionMade;
 int[] scores;
-int maxScore = 10;
+int maxScore = 30;
 boolean gameOver = false;
 int winner;
-
-color[] colors = new color[]{    
-  color(0, 255, 0, 120), 
-  color(255, 255, 0, 120), 
-  color(255, 0, 0, 120), 
-  color(0, 0, 255, 120), 
-  color(180, 180, 180, 120)
+int sideBuffer = 150;
+public color[] colors = new color[]{    
+  color(0, 255, 0, 150), 
+  color(215, 215, 0, 200), 
+  color(255, 50, 50, 150), 
+  color(120, 150, 255, 120), 
+  color(180, 180, 180, 150)
 }; 
 
 void setup() {
-  size (1000, 750);
+  size (1200, 750);
   smooth();
   frameRate(60);
   rectMode(CENTER);
@@ -72,7 +73,7 @@ void initialize() {
   bumpers = new ArrayList <Bumper>();
   drawable = new ArrayList <Object>();
   numBumperSpotsY= (int)(height/bumperSize.y/3-1);
-  numBumperSpotsX = (int)(width/bumperSize.x/2);
+  numBumperSpotsX = (int)((width-sideBuffer)/bumperSize.x/2);
   decisionMade = false;
   // setPlatforms();
   //get the number of local gamepads connected
@@ -92,6 +93,7 @@ void initialize() {
 
   for (int i = numGamePads; i < numPlayers; i++) {
     players.add( new Player(players, imgs[(players.size())%4], flaps));
+    
   }
 }
 
@@ -99,6 +101,9 @@ void reset() {
   players = new ArrayList <Player>();
   for (int i = 0; i < 4; i++) {//numGamePads; i ++) { 
     players.add( new Player(players, gpads.get(i), imgs[(players.size())%4], flaps));
+  }
+  for (Bumper p : bumpers){
+     p.duration = 500; 
   }
 }
 
@@ -109,6 +114,7 @@ void gameReset() {
   decisionMade = true;
   gameOver = false;
   reset();
+    setBumpers();
 }
 
 void setSounds() {
@@ -177,7 +183,7 @@ void addBumpers() {
     while (alreadyBlockPresent) {
       alreadyBlockPresent = false;
       //get a random PVector
-      temp = new PVector((int)random(-1*numBumperSpotsX, numBumperSpotsX)*bumperSize.x+width/2, 
+      temp = new PVector((int)random(-1*numBumperSpotsX, numBumperSpotsX)*bumperSize.x+(width-sideBuffer)/2, 
         (int)random(-1*numBumperSpotsY+1, numBumperSpotsY+2)*bumperSize.y+height/3);
       //check this vector agains the rest of the list
       for (int j = numNonAdjustableBumpers; j < bumpers.size()-1; j++) {
@@ -197,6 +203,7 @@ void addBumpers(Player p) {
       bumperSize, floor(random(-1, 3))*90));
   }
 }
+
 void setBumpers() {
   //along the leftside and rightside
   /*  for (int i = 0; i < 15; i += 1){
@@ -206,7 +213,7 @@ void setBumpers() {
    new PVector(bumperSize.x, bumperSize.y), 90 ));   
    }*/
   //the bumpers along the top and bottom
-  numNonAdjustableBumpers = 0;
+  numNonAdjustableBumpers = 0;//22
   for (int i = -1; i < 22; i += 1) {
     bumpers.add(new Bumper(new PVector(i*50+0.5*bumperSize.x, 0), 
       new PVector(bumperSize.x, bumperSize.y), 0 ));
@@ -215,13 +222,13 @@ void setBumpers() {
     numNonAdjustableBumpers+=2;
   }
 
-  for (int i = 0; i < 10; i ++) {
+  for (int i = 0; i < numBumpers; i ++) {
     boolean alreadyBlockPresent = true;
     PVector temp = new PVector();
     while (alreadyBlockPresent) {
       alreadyBlockPresent = false;
       //get a random PVector
-      temp = new PVector((int)random(-1*numBumperSpotsX, numBumperSpotsX)*bumperSize.x+width/2, 
+      temp = new PVector((int)random(-1*numBumperSpotsX, numBumperSpotsX)*bumperSize.x+(width-sideBuffer)/2, 
         (int)random(-1*numBumperSpotsY+1, numBumperSpotsY+1)*bumperSize.y+height/3);
       //check this vector agains the rest of the list
       for (int j = numNonAdjustableBumpers; j < bumpers.size()-1; j++) {
@@ -271,18 +278,19 @@ void keyPressed() {
 }
 
 void keyReleased() {
-  if (key == ' ') {
+  if (key == '`') {
     makeWinner();
   }
 }
 
 void draw() {
-  background(180);
+  background(255);
   if (!gameOver) {
     for (Player p : players) {
       p.update(); 
       for (Platform pf : platforms) {
-        pf.update(p);
+          pf.update(p);
+        
       }
       for (Bumper b : bumpers) {
         b.update(p);
@@ -302,10 +310,14 @@ void draw() {
         temp.draw();
       } else if (o instanceof Platform) {
         Platform temp = (Platform)o;
-        temp.draw();
+        if (temp.duration > 50){
+          temp.draw();
+        }
       } else if (o instanceof Bumper) {
         Bumper temp = (Bumper)o;
         temp.draw();
+       
+
       }
     }
 
@@ -314,38 +326,45 @@ void draw() {
       decisionMade = false;
       Player tp = players.get(0);
       textSize(50);
-      text("u", 140, 200);
-      text("i", 340, 200);
-      text("o", 540, 200);
-      text("p", 740, 200);
+      text("7", 240, 200);
+      text("8", 440, 200);
+      text("5", 640, 200);
+      text("6", 840, 200);
 
       for (int op = 0; op < icons.length; op++) {
 
         tint(tp.col);
         fill(255);
-        rect(150+op*200, 300, 102, 102, 10);
+        rect(250+op*200, 300, 102, 102, 10);
 
         fill(tp.col);
-        rect(150+op*200, 300, 100, 100, 10);
+        rect(250+op*200, 300, 100, 100, 10);
 
-        image(icons[op], 150+op*200, 300, 100, 100);
+        image(icons[op], 250+op*200, 300, 100, 100);
         tint(255);
       }
-      if (keyPressed) {
-        if (key == 'u') {
+      
+      ControlDevice tempPad = tp.getGPad();
+      
+      if (tempPad.getButton(7).pressed()){
+      //if (keyPressed) {
+       // if (key == 'u') {
           addBumpers();
           decisionMade = true;
-        } else if (key == 'i') {
+        } else if (tempPad.getButton(8).pressed()){
+        //else if (key == 'i') {
           removeBumpers();
           decisionMade = true;
-        } else if (key == 'o') {
+        } else if (tempPad.getButton(5).pressed()){
+        //else if (key == 'o') {
           rotateBumpers(-1);
           decisionMade = true;
-        } else if (key == 'p') {
+        } else if (tempPad.getButton(6).pressed()){
+        //else if (key == 'p') {
           rotateBumpers(1);
           decisionMade = true;
         }
-      }
+      
       if (decisionMade) {
         drawable.remove(tp);
         players.remove(tp);
@@ -354,12 +373,14 @@ void draw() {
     }
 
     //drawTheScores
+    fill(0);
+    rect(width - sideBuffer/5, height/2, sideBuffer, height);
     for (int i = 0; i < scores.length; i++) {
       fill(0, 140);
       textSize(30);
-      text("P"+(i+1)+" "+scores[i], width - 99, (i+1)*100+1);
+      text("P"+(i+1)+" "+scores[i], width - sideBuffer*0.6-1, (i+1)*100+1);
       fill(colors[i+1]);
-      text("P"+(i+1)+" "+scores[i], width - 100, (i+1)*100);
+      text("P"+(i+1)+" "+scores[i], width - sideBuffer*0.6, (i+1)*100);
       if (scores[i] >= maxScore) {
         gameOver = true;
         winner = i;
@@ -367,11 +388,17 @@ void draw() {
     }
   } else if (gameOver) {
         textSize(70);
-
+        textAlign(CENTER, CENTER);
         fill(colors[winner+1]);
-        image(imgs[winner][0], width/2, height/2, 300, 300);
-        text("Player "+ winner + "is the WINNER!", width/2 - 150,300); 
-        gameReset();
+        image(imgs[winner][0], (width)/2, height/2, 300, 300);
+        text("Player "+ winner + "is the WINNER!", (width)/2 ,200);
+        text("Press start to continue", (width)/2 ,550);
+        for (ControlDevice pad : gpads){
+          if (pad.getButton(10).pressed()){
+            gameReset();
+          }
+        }
+        textAlign(LEFT, TOP);
 
   }
 }
