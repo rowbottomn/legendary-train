@@ -7,7 +7,9 @@ public class Player extends AbstPlayer {
   int flapTime = 250;
   int disabledTime = 5000;
   float hitBoxScaling = 0.6;
-  
+  Tracer tracer;
+  int spawnTimer = 0;
+  int spawnDuration = 120;
   SoundFile [] flaps;
 
   public Player(ArrayList<Player>p) {
@@ -25,6 +27,7 @@ public class Player extends AbstPlayer {
     ID = players.size()+1;
     drawable.add(this);
     frame = 0;
+    spawnTimer = 0;
   }
 
   public Player(ArrayList<Player> p, ControlDevice g) {
@@ -44,6 +47,7 @@ public class Player extends AbstPlayer {
     disabled = false;
     dead = false;
     frame = 0;
+    spawnTimer = 0;
   }
 
   public Player(ArrayList<Player> p, PImage[] i) {
@@ -64,6 +68,7 @@ public class Player extends AbstPlayer {
     disabled = false;
     dead = false;
     frame = 0;
+    spawnTimer = 0;
   }
 
   public Player(Player p) {
@@ -87,6 +92,7 @@ public class Player extends AbstPlayer {
     disabled = false;
     frame = 0;
     dead = false;
+    spawnTimer = 0;
   }
 
   public Player(ArrayList<Player> p, PImage[] i, SoundFile[] f) {
@@ -106,7 +112,9 @@ public class Player extends AbstPlayer {
     disabled = false;
     dead = false;
     frame = 0;
+    spawnTimer = 0;
   }
+  
   public void checkKeys() {
 
     if (gpad == null) {
@@ -123,27 +131,33 @@ public class Player extends AbstPlayer {
         if (disTimer.canFlap) {
           vel.x +=  2. * vel.x;
           flap.flap();
-          flaps[(int)random(0, 3)].play();
+         // flaps[(int)random(0, 3)].play();
         }
       }
     } else {
 
-      if ((gpad.getButton("FLAP1").pressed() || gpad.getButton("FLAP2").pressed()||
-        gpad.getButton("FLAP3").pressed() || gpad.getButton("FLAP4").pressed())
+      if ((gpad.getButton("Flap_1").pressed() || gpad.getButton("Flap_2").pressed()||
+        gpad.getButton("Flap_3").pressed() || gpad.getButton("Flap_4").pressed())
         &&flap.canFlap) {
         if (disTimer.canFlap) {
           vel.y -= flapSpeed;
-          vel.x +=  2. * gpad.getSlider("XPOS").getValue();
+          vel.x +=  2. * gpad.getSlider("X_controls").getValue();
           flap.flap();
+          int temp = (int)random(0, 3);
           flaps[(int)random(0, 3)].play();
+          print("flaprandom"+temp);
         } else {
           disTimer.startTime -= 50;
         }
       }
 
-      vel.x +=  1.3 * gpad.getSlider("XPOS").getValue();
+      vel.x +=  1.3 * gpad.getSlider("X_controls").getValue();
     }
     //vel.x *= 0.95;//handled in the platform class
+  }
+
+  public ControlDevice getGPad(){
+     return gpad; 
   }
 
   public void checkLimits() {
@@ -164,18 +178,25 @@ public class Player extends AbstPlayer {
     if (pos.y< siz.y/2) {
       pos.y = siz.y/2;
     }
-    if (pos.x > width+siz.x) {
+    if (pos.x > (width - sideBuffer)+siz.x) {
       pos.x = -siz.x/2;
     }
     if (pos.x < -siz.x) {
-      pos.x = width+siz.x/2;
+      pos.x = (width - sideBuffer)+siz.x/2;
     }
 
     //left right boundary conditions
   }
 
   public void update() {
+
     if (!dead) {
+      if (tracer == null){
+         tracer = new Tracer(this); 
+       }
+      else {
+        tracer.update();
+      }
       flap.tick();
       disTimer.tick();
       siz.y = 0.2*maxHeight*(1.+(4*(float)disTimer.timer/(float)disabledTime));
@@ -187,8 +208,12 @@ public class Player extends AbstPlayer {
         vel.mult(0.75);
       }    
       pos.add(vel);
-
-      checkCollision();
+      if (spawnTimer < spawnDuration){
+         spawnTimer ++; 
+      }
+      else{
+        checkCollision();
+      }
     }
   }
 
@@ -230,11 +255,13 @@ public class Player extends AbstPlayer {
             dead = true;
             scores[p.ID-1]++;
             flaps[6].play();
+            print("Flap6");
             p.bounceY(this);
           } else if (!p.disTimer.canFlap) {
             p.dead = true;
             scores[ID-1]++;
             flaps[4].play();
+            print("Flap4");
             bounceY(this);
           } else {
             float diff = pos.y - p.pos.y;
@@ -242,10 +269,13 @@ public class Player extends AbstPlayer {
               //p.disabled = true;
               p.disTimer.flap();
               flaps[5].play();
+              print("Flap5");
               bounceY(p);
               p.bounceY(this);
             } else if (diff > siz.y/3. ) {
-              flaps[(int)random(4, 6)].play();
+              int temp = (int)random(4, 6); 
+              flaps[temp].play();
+              print("Flaprandom"+temp);
               //disabled = true;
               disTimer.flap();
               p.bounceY(this);
@@ -281,6 +311,8 @@ public class Player extends AbstPlayer {
       // rect(0,0,siz.x*0.6,siz.y*0.6);
       // ellipse(0,0,siz.x*0.7,siz.y*0.7);
       popMatrix();
+      fill (col, map(spawnTimer, 0, spawnDuration, 255, 0 ));
+      ellipse(pos.x, pos.y, siz.x, siz.y);
     }
   }
 }
