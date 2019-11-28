@@ -1,32 +1,40 @@
 public class Bumper extends Platform {
 
   public float dir;
+ 
 
   public Bumper(PVector p, PVector s, float d) {
     super(p);
     siz.set(s);
     dir = d/180.*PI;
+    duration = 500;
   }
 
   public void block() {
-    float dispX = pos.x - player.pos.x;
-    float dispY = pos.y - player.pos.y;
-    float xCorr = (player.siz.x*player.hitBoxScaling+siz.x)/2.;
-    float yCorr = (player.siz.y*player.hitBoxScaling+siz.y)/2.;   
-
-    if (dir == -PI){
-      player.vel.x *= 0.97;
-      player.vel.y *= 0.5;
-     // player.pos.y += -0.2*cos(dir)*(dispY - yCorr);
-      player.vel.y -= G.y;
+    if (duration > 50){
+      float dispX = pos.x - player.pos.x;
+      float dispY = pos.y - player.pos.y;
+      float xCorr = (player.siz.x*player.hitBoxScaling+siz.x)/2.;
+      float yCorr = (player.siz.y*player.hitBoxScaling+siz.y)/2.;   
+  
+      if (dir == -PI){
+        player.vel.x *= 0.97;
+        player.vel.y *= 0.5;
+       // player.pos.y += -0.2*cos(dir)*(dispY - yCorr);
+        player.vel.y -= G.y;
+      }
+      else if ((abs(dispX) <= xCorr) ) {
+        //player.vel.y = 0;
+        player.vel.x *= 0.97;
+        // player.pos.x -= (dispX - xCorr)/20.;
+        player.vel.y += -0.5*cos(dir)*(dispY - yCorr);
+        player.vel.x -= 30*sin(dir);
+      }
+      if (dir != -PI|| pos.y>height*siz.y){
+        duration -=10;
+      }
     }
-    else if ((abs(dispX) <= xCorr) ) {
-      //player.vel.y = 0;
-      player.vel.x *= 0.97;
-      // player.pos.x -= (dispX - xCorr)/20.;
-      player.vel.y += -0.5*cos(dir)*(dispY - yCorr);
-      player.vel.x -= 30*sin(dir);
-    }
+  
   }
 
   void draw() {
@@ -42,7 +50,7 @@ public class Bumper extends Platform {
       col = color(145, 145, 255);
     }
 
-    fill(col);
+    fill(col, duration);
     pushMatrix();
     translate(pos.x, pos.y);
     noStroke();
