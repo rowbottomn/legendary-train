@@ -1,5 +1,7 @@
 public class Platform extends AbstObstacle {
 
+   public float duration;
+   
   public Platform(PVector p) {
     pos = p;
     siz = new PVector(300, 50);
