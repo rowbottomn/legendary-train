@@ -25,7 +25,7 @@ Bumper class
 
 Hazard class          June 10               ~~~~~~~~~~                                                     Moved to optional requirements
 
-Gamepad controls                              June 10                  June 10                             Got 1P to have controls!  Need to implement multiplayers
+Gamepad controls                              June 10                  June 10       June 20               Got 1P to have controls!  Need to implement multiplayers
                                               June 8                                                       Still having problems getting control 
                                               June 7                                                        Little progress, looked at library
                       June 6                  June 6                 June 6                                Significant problems with library
@@ -42,15 +42,16 @@ Network Multi                                  June 4                           
                                                JUne 2                                                      Multiple things tried 
                       May 30                   June 1                June 1                                Trouble using udp library
 
-Couch Multi          June 10                                                                               Each player with arraylist of arraylists for lives, on death remove(0), spawn(get(0))
+Couch Multi          June 10                   June 18               June 20        June 22                Each player with arraylist of arraylists for lives, on death remove(0), spawn(get(0))
 
 AI multi             June 10                                                                                Any player slot not picked up gets picked up by AI
 
-UI                   June 10                                                                                G4P?  Look at other libraries?
+UI                   June 10                                                        June 20                        G4P?  Look at other libraries?
 
-Music and sounds     June 10                                                                                Need flap sound and music
+Music and sounds     June 10                   June   20            June 20        June 20                  Need flap sound and music
 
-Background image     June 10                                                                                Background image from flappy bird or random selection from arcade games (Ehonda screen)
+
+Background image     June 10                                                                                Background image from flappy bird or random selection from arcade games (Ehonda screen) 
 
 
 

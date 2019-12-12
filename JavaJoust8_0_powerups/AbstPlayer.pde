@@ -11,7 +11,7 @@ public abstract class AbstPlayer{
  PImage[] imgs;
  int ID;
  int score;
- boolean disabled;
+ public boolean disabled;
  boolean dead;
  int frame;
   

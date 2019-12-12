@@ -10,13 +10,13 @@ public class PowerUp{
  
  public PowerUp(int t){
     type = t;
-    pos = new PVector(width - 100, 100);
+    pos = new PVector((width - sideBuffer) - 100, 100);
  }
 
  public PowerUp(Player p, int t){
     owner = p;
     type = t;
-    pos = new PVector(width - 100, owner.ID*100);
+    pos = new PVector((width - sideBuffer) - 100, owner.ID*100);
  }
 
 

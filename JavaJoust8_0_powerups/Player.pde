@@ -80,7 +80,7 @@ public class Player extends AbstPlayer {
     gpad = g;
     imgs = i;
     //pos = new PVector(mouseX, mouseY);
-    pos = new PVector((players.size()+1)*200+50, height - 75);
+    pos = new PVector((players.size()+1)*(width-200)/5, height - 75);
     vel = PVector.random2D();
     powerUps = new ArrayList <PowerUp>();
     flap = new FlapTimer(flapTime);

@@ -28,7 +28,7 @@ public Player player;
 public AIFloater floater;
 public int numPlayers = 4;
 public int numGamePads; 
-int numBumpers = 20;
+int numBumpers = 30;
 int numBumperSpotsX; 
 int numBumperSpotsY; 
 int numNonAdjustableBumpers = 0;
@@ -38,6 +38,9 @@ int maxScore = 30;
 boolean gameOver = false;
 int winner;
 int sideBuffer = 150;
+float leftSide;
+float rightSide;
+
 public color[] colors = new color[]{    
   color(0, 255, 0, 150), 
   color(215, 215, 0, 200), 
@@ -47,7 +50,7 @@ public color[] colors = new color[]{
 }; 
 
 void setup() {
-  size (1200, 750);
+  size (1600, 950);
   smooth();
   frameRate(60);
   rectMode(CENTER);
@@ -105,6 +108,8 @@ void reset() {
   for (Bumper p : bumpers){
      p.duration = 500; 
   }
+  rightSide = 10000;
+  leftSide = -10000;//get walls out of the way until the final show down
 }
 
 void gameReset() {
@@ -214,7 +219,7 @@ void setBumpers() {
    }*/
   //the bumpers along the top and bottom
   numNonAdjustableBumpers = 0;//22
-  for (int i = -1; i < 22; i += 1) {
+  for (int i = -1; i < 30; i += 1) {
     bumpers.add(new Bumper(new PVector(i*50+0.5*bumperSize.x, 0), 
       new PVector(bumperSize.x, bumperSize.y), 0 ));
     bumpers.add(new Bumper(new PVector(i*bumperSize.x+0.5*bumperSize.x, height), 
@@ -335,12 +340,13 @@ void draw() {
 
         tint(tp.col);
         fill(255);
-        rect(250+op*200, 300, 102, 102, 10);
+        float imgPos = (op+0.8)*width/5;
+        rect(imgPos, 300, 102, 102, 10);
 
         fill(tp.col);
-        rect(250+op*200, 300, 100, 100, 10);
+        rect(imgPos, 300, 100, 100, 10);
 
-        image(icons[op], 250+op*200, 300, 100, 100);
+        image(icons[op], imgPos, 300, 100, 100);
         tint(255);
       }
       
@@ -370,6 +376,10 @@ void draw() {
         players.remove(tp);
         reset();
       }
+    }
+    else if (players.size() == 2){
+        leftSide ++;
+        rightSide --;
     }
 
     //drawTheScores
