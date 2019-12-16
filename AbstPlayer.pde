@@ -5,7 +5,7 @@ public abstract class AbstPlayer{
  FlapTimer disTimer;
  PVector pos;
  PVector vel;
- PVector siz = new PVector(50., 50.); 
+ PVector siz = new PVector(60., 60.); 
  float maxHeight = siz.y;
  color col;
  PImage[] imgs;

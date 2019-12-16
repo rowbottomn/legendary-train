@@ -1,7 +1,7 @@
 public class Bumper extends Platform {
 
   public float dir;
- 
+  public boolean temp = false; //is this a temporary bumper made for the showdown?
 
   public Bumper(PVector p, PVector s, float d) {
     super(p);
@@ -9,7 +9,13 @@ public class Bumper extends Platform {
     dir = d/180.*PI;
     duration = 500;
   }
-
+  
+  public Bumper(PVector p, PVector s, float d, boolean t) {
+    this(p, s, d);
+    temp = t;
+    duration = 1000000;
+  }
+  
   public void block() {
     if (duration > 50){
       float dispX = pos.x - player.pos.x;

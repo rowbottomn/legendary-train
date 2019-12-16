@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Player extends AbstPlayer {
   ControlDevice gpad;
-  float maxSpeed = 5.5;
+  float maxSpeed = 5.9;
   float flapSpeed = 7;
   int flapTime = 250;
   int disabledTime = 5000;
@@ -10,6 +10,7 @@ public class Player extends AbstPlayer {
   Tracer tracer;
   int spawnTimer = 0;
   int spawnDuration = 120;
+  int collisionTime = 0;
   SoundFile [] flaps;
 
   public Player(ArrayList<Player>p) {
@@ -75,24 +76,8 @@ public class Player extends AbstPlayer {
   }
 
   public Player(ArrayList<Player> p, ControlDevice g, PImage[] i, SoundFile[] f) {
-    players = p;
-    flaps = f;
+    this(p, i, f);
     gpad = g;
-    imgs = i;
-    //pos = new PVector(mouseX, mouseY);
-    pos = new PVector((players.size()+1)*(width-200)/5, height - 75);
-    vel = PVector.random2D();
-    powerUps = new ArrayList <PowerUp>();
-    flap = new FlapTimer(flapTime);
-    disTimer = new FlapTimer(disabledTime);
-    //lives = 4;
-    ID = players.size()+1;
-    col = colors[ID];
-    drawable.add(this);
-    disabled = false;
-    frame = 0;
-    dead = false;
-    spawnTimer = 0;
   }
 
   public Player(ArrayList<Player> p, PImage[] i, SoundFile[] f) {
@@ -101,13 +86,14 @@ public class Player extends AbstPlayer {
 
     imgs = i;
     //pos = new PVector(mouseX, mouseY);
-    pos = new PVector(players.indexOf(this)*150+50, height - 75);
-    vel = PVector.random2D();
+    pos = new PVector((players.size()+1)*width/(numPlayers+1), height - 75);
+    vel = new PVector();
     powerUps = new ArrayList <PowerUp>();
     flap = new FlapTimer(flapTime);
     disTimer = new FlapTimer(disabledTime);
     //lives = 4;
     ID = players.size()+1;
+    col = colors[ID];
     drawable.add(this);
     disabled = false;
     dead = false;
@@ -145,13 +131,13 @@ public class Player extends AbstPlayer {
           flap.flap();
           int temp = (int)random(0, 3);
           flaps[(int)random(0, 3)].play();
-          print("flaprandom"+temp);
+          //print("flaprandom"+temp);
         } else {
           disTimer.startTime -= 50;
         }
       }
 
-      vel.x +=  1.3 * gpad.getSlider("X_controls").getValue();
+      vel.x +=  1.1 * gpad.getSlider("X_controls").getValue();
     }
     //vel.x *= 0.95;//handled in the platform class
   }
@@ -236,12 +222,14 @@ public class Player extends AbstPlayer {
   }
 
   public void bounceX(Player p) {
-    //PVector pointAway = new PVector (pos.x - p.pos.x,pos.y - p.pos.y);
+    PVector pointAway = PVector.sub(pos, p.pos);
     //vel.y*=-1.1;
-
-    vel.x*=-1.05;
-    vel.x +=p.vel.x;
-    vel.mult(0.5);
+    pointAway.normalize();
+    //vel.x*=-1.05;
+    //vel.x +=p.vel.x;
+    
+    pointAway.mult(10);
+    vel.add(pointAway);
   }
 
   public void checkCollision() {
@@ -255,13 +243,13 @@ public class Player extends AbstPlayer {
             dead = true;
             scores[p.ID-1]++;
             flaps[6].play();
-            print("Flap6");
+           // print("Flap6");
             p.bounceY(this);
           } else if (!p.disTimer.canFlap) {
             p.dead = true;
             scores[ID-1]++;
             flaps[4].play();
-            print("Flap4");
+            //print("Flap4");
             bounceY(this);
           } else {
             float diff = pos.y - p.pos.y;
@@ -269,13 +257,13 @@ public class Player extends AbstPlayer {
               //p.disabled = true;
               p.disTimer.flap();
               flaps[5].play();
-              print("Flap5");
+           //   print("Flap5");
               bounceY(p);
               p.bounceY(this);
             } else if (diff > siz.y/3. ) {
               int temp = (int)random(4, 6); 
               flaps[temp].play();
-              print("Flaprandom"+temp);
+           //   print("Flaprandom"+temp);
               //disabled = true;
               disTimer.flap();
               p.bounceY(this);
@@ -307,6 +295,7 @@ public class Player extends AbstPlayer {
       if (cos(vel.heading())< 0) {
         scale(1, -1);
       }
+      tint(colors[ID]);
       image(img, 0., 0., siz.x, siz.y);
       // rect(0,0,siz.x*0.6,siz.y*0.6);
       // ellipse(0,0,siz.x*0.7,siz.y*0.7);
