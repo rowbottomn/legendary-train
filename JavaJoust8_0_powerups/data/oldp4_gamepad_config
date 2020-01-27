@@ -1,0 +1,7 @@
+Player 1 gamepad controller generic USB
+YPOS	Y position controlls (not used)	3	SLIDER	Y Axis	0	1.0	0.02
+XPOS	X position steering	3	SLIDER	X Axis	0	1.0	0.2
+FLAP1	Multiple flap buttons	1	BUTTON	Button 0	0	0.0	0.0
+FLAP2	Multiple flap buttons	1	BUTTON	Button 1	0	0.0	0.0
+FLAP3	Multiple flap buttons	1	BUTTON	Button 2	0	0.0	0.0
+FLAP4	Multiple flap buttons	1	BUTTON	Button 3	0	0.0	0.0

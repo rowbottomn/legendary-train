@@ -1,0 +1,12 @@
+Controls the FlappyBrawlers
+X_controls	Horizontal Controls	3	SLIDER	X Axis	0	1.0	0.0
+Y_controls	Not Used	3	SLIDER	Y Axis	0	1.0	0.0
+Flap_1	Flap	1	BUTTON	Button 0	0	0.0	0.0
+Flap_2	Flap	1	BUTTON	Button 1	0	0.0	0.0
+Flap_3	Flap	1	BUTTON	Button 2	0	0.0	0.0
+Flap_4	Flap	1	BUTTON	Button 3	0	0.0	0.0
+Add 	Add more blocks	1	BUTTON	Button 6	0	0.0	0.0
+Remove	Remove blocks	1	BUTTON	Button 7	0	0.0	0.0
+Rot_left	Rotate CCW	1	BUTTON	Button 4	0	0.0	0.0
+Rot_right	Rotate CW	1	BUTTON	Button 5	0	0.0	0.0
+Start	Restart the next game	1	BUTTON	Button 9	0	0.0	0.0

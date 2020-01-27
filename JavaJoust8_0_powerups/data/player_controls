@@ -1,0 +1,5 @@
+FlappyBird Player
+XVEL	Velocity of the  x_control	3	SLIDER	X Axis	0	1.0	0.15
+YVEL	Velocity of the y_control	3	SLIDER	Y Axis	0	1.0	0.15
+FLAP1	flap button 1	1	BUTTON	Button 0	0	0.0	0.0
+FLAP2	flap button 2	1	BUTTON	Button 1	0	0.0	0.0
